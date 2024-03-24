@@ -4,4 +4,16 @@ VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 
 -- name: GetFeeds :many
-SELECT * FROM feeds;
+SELECT * from feeds;
+
+-- name: GetNextFeedsToFetch :many
+SELECT * from feeds
+ORDER BY last_fetched_at ASC NULLS FIRST
+LIMIT $1;
+
+-- name: MarkFeedAsFetched :one
+UPDATE feeds
+UPDATE SET last_fetched_at = NOW(),
+updated_at = NOW()
+WHERE id = $1
+RETURNING *;
